@@ -4,3 +4,4 @@ gymnasium
 str2bool
 argparse
 pygame
+numpy==1.26.4

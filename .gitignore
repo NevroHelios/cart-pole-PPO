@@ -1,3 +1,4 @@
 runs
 videos
 wandb
+__pycache__/
