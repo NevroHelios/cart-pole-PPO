@@ -1,0 +1,6 @@
+moviepy
+torch # torch+cu121
+gymnasium
+str2bool
+argparse
+pygame
