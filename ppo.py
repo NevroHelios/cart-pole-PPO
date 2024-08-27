@@ -21,7 +21,7 @@ def parse_args():
                         help="the learning rate of the optimizer")
     parser.add_argument('--seed', type=int, default=42,
                         help="seed of the experiment")
-    parser.add_argument('--total-timesteps', type=int, default=2500,
+    parser.add_argument('--total-timesteps', type=int, default=25000,
                         help="total timesteps of the experiments")
     parser.add_argument('--torch-deterministic', type=lambda x:str2bool(x), default=True, nargs='?', const=True,
                         help="if toggled, torch.backends.cudnn.deterministic=False")
@@ -203,17 +203,16 @@ if __name__ == "__main__":
             
             
             # DO NOT MODIFY: execute the game and log data.
-            next_obs, reward, terminated, trauncated, info = envs.step(action.cpu().numpy())
-            done = np.logical_or(trauncated, terminated)
+            next_obs, reward, termination, truncation, info = envs.step(action.cpu().numpy())
+            done = np.logical_or(termination, truncation)
             rewards[step] = torch.tensor(reward).to(device).view(-1)
             next_obs, next_done = torch.Tensor(next_obs).to(device), torch.Tensor(done).to(device)
             
             for item in info:
                 if isinstance(info[item][0], dict):
-                    print(f"global_step={global_step}, episodic_return={info[item][0]["episode"]['r']}")
+                    print(f"global_step = {global_step}, episodic_return =", *info[item][0]["episode"]['r'])
                     writer.add_scalar("charts/episodic_return", info[item][0]["episode"]['r'], global_step)
                     writer.add_scalar("charts/episodic_length", info[item][0]["episode"]['l'], global_step)
-                    break
                 
         # bootstrap value if not done
         with torch.inference_mode():
